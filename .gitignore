@@ -1,0 +1,6 @@
+.idea/
+.DS_Store
+go-gin-gorm-starter
+.env
+logs/
+/dist/
