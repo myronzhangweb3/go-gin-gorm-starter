@@ -55,6 +55,6 @@ Distributed under the MIT License. See [LICENSE](./LICENSE) for more information
 
 ## Contact
 
-Myron - Email: myronzhangweb3@gmail.com)
+Myron - Email: myronzhangweb3@gmail.com
 
 Project Link: https://github.com/smarterwallet/go-gin-gorm-starter
