@@ -1,4 +1,4 @@
-package routes
+package routers
 
 import (
 	"github.com/gin-contrib/pprof"

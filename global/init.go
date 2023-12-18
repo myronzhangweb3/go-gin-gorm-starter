@@ -4,7 +4,7 @@ import (
 	"fmt"
 	log "github.com/cihub/seelog"
 	"github.com/spf13/viper"
-	"go-gin-gorm-starter/moduls/moduls_db"
+	"go-gin-gorm-starter/models"
 	"gorm.io/driver/mysql"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -64,7 +64,7 @@ func InitDB() {
 	}
 
 	err = DB.AutoMigrate(
-		&moduls_db.StrategyInfo{},
+		&models.StrategyInfo{},
 	)
 	if err != nil {
 		panic("Migrate DB error:" + err.Error())

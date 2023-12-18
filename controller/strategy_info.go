@@ -2,7 +2,7 @@ package controller
 
 import (
 	"github.com/gin-gonic/gin"
-	"go-gin-gorm-starter/moduls/moduls_db"
+	"go-gin-gorm-starter/models"
 	"go-gin-gorm-starter/service"
 	"go-gin-gorm-starter/utils/gin2"
 	"strconv"
@@ -11,7 +11,7 @@ import (
 func GetSimpleStrategy(ctx *gin.Context) {
 	address := ctx.Query("address")
 
-	data, err := service.FindSimpleStrategy(&moduls_db.StrategyInfo{
+	data, err := service.FindSimpleStrategy(&models.StrategyInfo{
 		Name: address,
 	})
 	if err != nil {
@@ -24,7 +24,7 @@ func GetSimpleStrategy(ctx *gin.Context) {
 
 func SaveSimpleStrategy(ctx *gin.Context) {
 	var (
-		reqUser moduls_db.StrategyInfo
+		reqUser models.StrategyInfo
 	)
 
 	ctx.Bind(&reqUser)
@@ -40,7 +40,7 @@ func SaveSimpleStrategy(ctx *gin.Context) {
 
 func DeleteSimpleStrategy(ctx *gin.Context) {
 	var (
-		params moduls_db.StrategyInfo
+		params models.StrategyInfo
 	)
 
 	idStr := ctx.Param("id")
