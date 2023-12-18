@@ -4,7 +4,7 @@ echo 'build version: '${version}
 
 sudo make build
 
-repo_name="w3ifun/training_collector_serv"
+repo_name="w3ifun/go-gin-gorm-starter"
 image_name="${repo_name}:${version}"
 latest="${repo_name}:latest"
 sudo docker rmi -f $(docker images -q ${repo_name})

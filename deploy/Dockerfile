@@ -2,9 +2,9 @@ FROM golang:alpine
 
 WORKDIR /app
 
-COPY . .
+COPY ../ .
 
-RUN go build -o go-gin-gorm-starter main.go
+RUN go build -o go-gin-gorm-starter ../main.go
 
 EXPOSE 8081
 
