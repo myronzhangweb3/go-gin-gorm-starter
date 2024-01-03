@@ -1,12 +1,9 @@
 package config
 
 import (
-	"github.com/fsnotify/fsnotify"
 	"github.com/spf13/viper"
 	"log"
 )
-
-var C = make(map[string]interface{}, 0)
 
 func init() {
 	// Read in from .env file if available
@@ -28,11 +25,4 @@ func init() {
 	_ = viper.BindEnv("DATABASE.PASSWORD")
 	_ = viper.BindEnv("DATABASE.DBNAME")
 
-	viper.Unmarshal(&C)
-
-	viper.WatchConfig()
-	viper.OnConfigChange(func(e fsnotify.Event) {
-		viper.Unmarshal(&C)
-		log.Printf("Reload Config success: %s", e.Name)
-	})
 }
