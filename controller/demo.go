@@ -11,7 +11,7 @@ import (
 func GetSimpleStrategy(ctx *gin.Context) {
 	address := ctx.Query("address")
 
-	data, err := service.FindSimpleStrategy(&models.StrategyInfo{
+	data, err := service.FindSimpleStrategy(&models.Demo{
 		Name: address,
 	})
 	if err != nil {
@@ -24,7 +24,7 @@ func GetSimpleStrategy(ctx *gin.Context) {
 
 func SaveSimpleStrategy(ctx *gin.Context) {
 	var (
-		reqUser models.StrategyInfo
+		reqUser models.Demo
 	)
 
 	ctx.Bind(&reqUser)
@@ -40,7 +40,7 @@ func SaveSimpleStrategy(ctx *gin.Context) {
 
 func DeleteSimpleStrategy(ctx *gin.Context) {
 	var (
-		params models.StrategyInfo
+		params models.Demo
 	)
 
 	idStr := ctx.Param("id")

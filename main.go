@@ -15,8 +15,6 @@ import (
 	"time"
 )
 
-var router *gin.Engine
-
 func main() {
 	var env = os.Getenv("GO_ENV")
 	if env != "production" {
@@ -25,7 +23,7 @@ func main() {
 		gin.SetMode(gin.ReleaseMode)
 	}
 
-	router = routers.InitRouter()
+	router := routers.InitRouter()
 
 	addr := fmt.Sprintf(":%d", viper.GetInt("port"))
 	srv := &http.Server{

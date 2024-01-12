@@ -64,7 +64,7 @@ func InitDB() {
 	}
 
 	err = DB.AutoMigrate(
-		&models.StrategyInfo{},
+		&models.Demo{},
 	)
 	if err != nil {
 		panic("Migrate DB error:" + err.Error())
