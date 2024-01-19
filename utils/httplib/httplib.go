@@ -3,13 +3,13 @@ package httplib
 import (
 	"bytes"
 	"encoding/json"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"time"
 )
 
 var (
-	client = http.Client{Timeout: time.Duration(10 * time.Second)}
+	client = http.Client{Timeout: 10 * time.Second}
 )
 
 const (
@@ -20,11 +20,15 @@ const (
 )
 
 func Request(method, url string, data interface{}, headers map[string]string) (*http.Response, error) {
-	bytesData, err := json.Marshal(data)
-	if err != nil {
-		return nil, err
+	var dataParams []byte
+	var err error
+	if data != nil {
+		dataParams, err = json.Marshal(data)
+		if err != nil {
+			return nil, err
+		}
 	}
-	req, err := http.NewRequest(method, url, bytes.NewReader(bytesData))
+	req, err := http.NewRequest(method, url, bytes.NewReader(dataParams))
 	if err != nil {
 		return nil, err
 	}
@@ -42,7 +46,7 @@ func RequestBind(method, url string, data interface{}, headers map[string]string
 	if obj == nil {
 		return resp, nil
 	}
-	body, err := ioutil.ReadAll(resp.Body)
+	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return resp, err
 	}
