@@ -5,10 +5,14 @@ import (
 	"go-gin-gorm-starter/models"
 	"go-gin-gorm-starter/service"
 	"go-gin-gorm-starter/utils/gin2"
+	"go-gin-gorm-starter/utils/time2"
 	"strconv"
+	"time"
 )
 
 func GetSimpleStrategy(ctx *gin.Context) {
+	defer time2.TimeConsume(time.Now())
+
 	address := ctx.Query("address")
 
 	data, err := service.FindSimpleStrategy(&models.Demo{
