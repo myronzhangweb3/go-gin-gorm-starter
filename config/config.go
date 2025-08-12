@@ -25,4 +25,6 @@ func init() {
 	_ = viper.BindEnv("DATABASE.PASSWORD")
 	_ = viper.BindEnv("DATABASE.DBNAME")
 
+	_ = viper.BindEnv("ENABLE_CORS")
+
 }

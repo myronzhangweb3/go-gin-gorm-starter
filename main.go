@@ -7,7 +7,7 @@ import (
 	"github.com/spf13/viper"
 	_ "go-gin-gorm-starter/config"
 	_ "go-gin-gorm-starter/global"
-	"go-gin-gorm-starter/routers"
+	"go-gin-gorm-starter/internal/routers"
 	"net/http"
 	"os"
 	"os/signal"
