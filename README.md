@@ -38,7 +38,7 @@ To get started with this template, follow these simple steps:
    ```bash
    go run cmd/main.go
    ```
-
+   or
    ```bash
    docker build --no-cache -t api-server .
    docker-compose up -d
