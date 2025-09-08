@@ -1,101 +1,110 @@
-package lark_util
+package lark
 
 import (
 	"bytes"
+	"encoding/json"
 	"errors"
 	"fmt"
-	"io"
 	"net/http"
-	"strings"
 	"time"
 )
 
 type Lark struct {
-	name string
-	url  string
+	Name   string
+	URL    string
+	Client *http.Client
 }
 
+type MessageContent struct {
+	MsgType string     `json:"msg_type"`
+	Content PostSchema `json:"content"`
+}
+
+type PostSchema struct {
+	Post map[string]PostLang `json:"post"`
+}
+
+type PostLang struct {
+	Title   string        `json:"title"`
+	Content [][]TextBlock `json:"content"`
+}
+
+type TextBlock struct {
+	Tag  string `json:"tag"`
+	Text string `json:"text"`
+}
+
+// NewLark creates a new Lark webhook client
 func NewLark(name, url string) (*Lark, error) {
 	if url == "" {
-		return nil, errors.New("lark_util url is empty")
+		return nil, errors.New("lark url is empty")
 	}
 	return &Lark{
-		name: name,
-		url:  url,
+		Name: name,
+		URL:  url,
+		Client: &http.Client{
+			Timeout: 10 * time.Second,
+		},
 	}, nil
 }
 
-func (l *Lark) messageInfo(title string, info string) string {
-	return fmt.Sprintf("{\"msg_type\":\"post\",\"content\":{\"post\":{\"zh_cn\":{\"title\":\"%s\",\"content\":%s}}}}", title, info)
-}
-
-func (l *Lark) sendMessage(title string, info string) ([]byte, error) {
-	msg := l.messageInfo(l.name+" "+title, info)
-
-	req, err := http.NewRequest("POST", l.url, bytes.NewBuffer([]byte(msg)))
+func (l *Lark) send(payload MessageContent) error {
+	data, err := json.Marshal(payload)
 	if err != nil {
-		return nil, err
+		return fmt.Errorf("failed to marshal payload: %w", err)
+	}
+
+	req, err := http.NewRequest("POST", l.URL, bytes.NewBuffer(data))
+	if err != nil {
+		return fmt.Errorf("failed to create request: %w", err)
 	}
 	req.Header.Set("Content-Type", "application/json")
-	client := &http.Client{
-		Timeout: time.Duration(10) * time.Second,
-	}
-	resp, err := client.Do(req)
+
+	resp, err := l.Client.Do(req)
 	if err != nil {
-		return nil, err
+		return fmt.Errorf("failed to send request: %w", err)
 	}
 	defer resp.Body.Close()
 
-	if resp.StatusCode != 200 {
-		return nil, fmt.Errorf("larkutils: incorrect response status code: %d", resp.StatusCode)
+	if resp.StatusCode != http.StatusOK {
+		return fmt.Errorf("lark: incorrect response status code: %d", resp.StatusCode)
 	}
 
-	return io.ReadAll(resp.Body)
+	return nil
 }
 
-func (l *Lark) escapeString(s string) string {
-	var builder strings.Builder
-
-	for _, r := range s {
-		switch r {
-		case '\n':
-			builder.WriteString("\\n")
-		case '\t':
-			builder.WriteString("\\t")
-		case '\\':
-			builder.WriteString("\\\\")
-		case '"':
-			builder.WriteString("\\\"")
-		case '\'':
-			builder.WriteString("\\'")
-		case '\r':
-			builder.WriteString("\\r")
-		case '\b':
-			builder.WriteString("\\b")
-		case '\f':
-			builder.WriteString("\\f")
-		case '\v':
-			builder.WriteString("\\v")
-		default:
-			builder.WriteRune(r)
-		}
+func (l *Lark) SendMessage(title, details string) error {
+	payload := MessageContent{
+		MsgType: "post",
+		Content: PostSchema{
+			Post: map[string]PostLang{
+				"zh_cn": {
+					Title: l.Name + " Message",
+					Content: [][]TextBlock{
+						{{Tag: "text", Text: "Type: " + title}},
+						{{Tag: "text", Text: "Details: " + details}},
+					},
+				},
+			},
+		},
 	}
-
-	return builder.String()
+	return l.send(payload)
 }
 
-func (l *Lark) SendErrorMessage(title string, error error) ([]byte, error) {
-	msg := fmt.Sprintf("["+
-		"[{\"tag\":\"text\",\"text\":\"Error title: %s\"}],"+
-		"[{\"tag\":\"text\",\"text\":\"Error details: %s\"}]"+
-		"]", title, l.escapeString(error.Error()))
-	return l.sendMessage("Error Message", msg)
-}
-
-func (l *Lark) SendMessage(title string, details string) ([]byte, error) {
-	msg := fmt.Sprintf("["+
-		"[{\"tag\":\"text\",\"text\":\"Type: %s\"}],"+
-		"[{\"tag\":\"text\",\"text\":\"Details: %s\"}]"+
-		"]", title, l.escapeString(details))
-	return l.sendMessage("Message", msg)
+func (l *Lark) SendErrorMessage(title string, err error) error {
+	payload := MessageContent{
+		MsgType: "post",
+		Content: PostSchema{
+			Post: map[string]PostLang{
+				"zh_cn": {
+					Title: l.Name + " Error",
+					Content: [][]TextBlock{
+						{{Tag: "text", Text: "Error title: " + title}},
+						{{Tag: "text", Text: "Error details: " + err.Error()}},
+					},
+				},
+			},
+		},
+	}
+	return l.send(payload)
 }
