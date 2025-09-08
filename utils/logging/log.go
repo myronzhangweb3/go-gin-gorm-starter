@@ -6,23 +6,19 @@ import (
 	"path/filepath"
 	"time"
 
-	"github.com/spf13/viper"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 )
 
 var (
-	logLevel            = viper.GetString("LOG.LEVEL")
 	defaultLogLevelInfo = "info"
-
-	Log *zap.Logger
 )
 
-func InitLogger(programName string) {
-	InitLoggerWithLogFile(programName, "")
+func InitLogger(programName, logLevel string) (*zap.Logger, error) {
+	return InitLoggerWithLogFile(programName, "", logLevel)
 }
 
-func InitLoggerWithLogFile(programName, logFilePath string) {
+func InitLoggerWithLogFile(programName, logFilePath, logLevel string) (log *zap.Logger, err error) {
 	if logLevel == "" {
 		logLevel = defaultLogLevelInfo
 	}
@@ -47,7 +43,7 @@ func InitLoggerWithLogFile(programName, logFilePath string) {
 
 	config.EncoderConfig.TimeKey = "timestamp"
 	config.EncoderConfig.EncodeTime = func(t time.Time, enc zapcore.PrimitiveArrayEncoder) {
-		enc.AppendString(t.Format("2006-01-02 15:04:05"))
+		enc.AppendString(t.Format("2006-01-02 15:04:05.000"))
 	}
 	config.EncoderConfig.EncodeLevel = zapcore.CapitalLevelEncoder
 	config.EncoderConfig.CallerKey = "caller"
@@ -58,16 +54,16 @@ func InitLoggerWithLogFile(programName, logFilePath string) {
 	if logFilePath != "" {
 		// Ensure the directory exists
 		dir := filepath.Dir(logFilePath)
-		if err := os.MkdirAll(dir, 0755); err != nil {
-			fmt.Printf("%s init_db logger error: %v\n", time.Now().Format("2006-01-02 15:04:05"), err)
-			return
+		if err = os.MkdirAll(dir, 0755); err != nil {
+			fmt.Printf("%s init logger error: %v\n", time.Now().Format("2006-01-02 15:04:05"), err)
+			return nil, err
 		}
 
 		// Create a file to write logs
 		file, err := os.OpenFile(logFilePath, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 		if err != nil {
-			fmt.Printf("%s init_db logger error: %v\n", time.Now().Format("2006-01-02 15:04:05"), err)
-			return
+			fmt.Printf("%s init logger error: %v\n", time.Now().Format("2006-01-02 15:04:05"), err)
+			return nil, err
 		}
 		// Create a core that writes logs to the file
 		fileCore := zapcore.NewCore(
@@ -76,16 +72,18 @@ func InitLoggerWithLogFile(programName, logFilePath string) {
 			level,
 		)
 		// Build the logger with the file core
-		Log = zap.New(fileCore, zap.AddCaller(), zap.AddCallerSkip(1))
+		log = zap.New(fileCore, zap.AddCaller(), zap.AddCallerSkip(1))
 	} else {
 		var err error
-		Log, err = config.Build(zap.AddCallerSkip(1))
+		log, err = config.Build(zap.AddCallerSkip(1))
 		if err != nil {
-			fmt.Printf("%s init_db logger error: %v\n", time.Now().Format("2006-01-02 15:04:05"), err)
-			return
+			fmt.Printf("%s init logger error: %v\n", time.Now().Format("2006-01-02 15:04:05"), err)
+			return nil, err
 		}
 	}
-	Log = Log.With(zap.String("program", programName))
+	log = log.With(zap.String("program", programName))
 
-	Log.Info("init Zap logger success!")
+	log.Info("init Zap logger success!")
+
+	return log, nil
 }

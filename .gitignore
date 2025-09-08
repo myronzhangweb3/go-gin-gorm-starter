@@ -4,3 +4,4 @@ go-gin-gorm-starter
 .env
 logs/
 /dist/
+/config/config.toml

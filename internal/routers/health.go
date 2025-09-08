@@ -2,13 +2,12 @@ package routers
 
 import (
 	"github.com/gin-gonic/gin"
+	"go-gin-gorm-starter/utils/gin2"
 )
 
-func InitHealthRouter(router *gin.RouterGroup) {
+func (r *Router) InitHealthRouter(router *gin.RouterGroup) {
 	health := router.Group("/")
 	health.GET("/", func(ctx *gin.Context) {
-		ctx.JSON(200, gin.H{
-			"message": "ok",
-		})
+		gin2.HttpResponse(ctx, "ok", nil)
 	})
 }

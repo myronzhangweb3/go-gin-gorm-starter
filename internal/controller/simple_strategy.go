@@ -6,17 +6,20 @@ import (
 	"go-gin-gorm-starter/internal/service"
 	"go-gin-gorm-starter/utils/gin2"
 	"go-gin-gorm-starter/utils/time2"
+	"go.uber.org/zap"
 	"gorm.io/gorm"
 	"strconv"
 	"time"
 )
 
 type SimpleStrategyController struct {
+	log             *zap.Logger
 	strategyService *service.SimpleStrategyService
 }
 
-func NewSimpleStrategyController(db *gorm.DB) *SimpleStrategyController {
+func NewSimpleStrategyController(log *zap.Logger, db *gorm.DB) *SimpleStrategyController {
 	return &SimpleStrategyController{
+		log:             log,
 		strategyService: service.NewSimpleStrategyService(db),
 	}
 }

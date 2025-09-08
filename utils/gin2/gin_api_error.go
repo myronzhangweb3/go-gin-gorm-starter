@@ -1,4 +1,4 @@
-package errors_util
+package gin2
 
 import (
 	"net/http"

@@ -1,0 +1,19 @@
+[http]
+port = 8000
+enable_cors = true
+gin_mode = "dev"
+
+[log]
+log_level = "debug"
+
+[db]
+driver = "postgres"
+log_level = "debug"
+host = "127.0.0.1"
+port = 5432
+username = "postgres"
+password = "123456"
+dbname = "db_name_dev"
+
+[alarm]
+url = "xxx"
