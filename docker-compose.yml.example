@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+  api-server:
+    image: api-server
+    container_name: api-server
+    logging:
+      options:
+        max-size: "100m"
+        max-file: "3"
+    volumes:
+      - ./config/config.toml:/app/config/config.toml
+    ports:
+      - "8000:8000"
+    command: [ "/app/api-server", "server", "-c", "/app/config/config.toml" ]
+    healthcheck:
+      test: [ "CMD", "wget", "-q", "--spider", "http://127.0.0.1:8000/api" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    networks:
+      - api-server
+
+networks:
+  api-server:
+    driver: bridge

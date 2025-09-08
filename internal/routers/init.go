@@ -24,7 +24,7 @@ func NewRouter(log *zap.Logger, cfg *config.Config, db *gorm.DB) *Router {
 	return &Router{log: log, cfg: cfg, db: db}
 }
 
-func (r *Router) InitOrderRouter() *gin.Engine {
+func (r *Router) InitRouter() *gin.Engine {
 	router := gin.New()
 	if r.cfg.HTTP.EnableCORS {
 		r.log.Info("enable cors")

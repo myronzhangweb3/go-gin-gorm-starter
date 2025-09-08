@@ -13,6 +13,6 @@ func Server(ctx *cli.Context) error {
 	configPath := ctx.String("config")
 	return HttpServer(configPath, "Server", func(log *zap.Logger, cfg *config.Config, db *gorm.DB) *gin.Engine {
 		router := routers.NewRouter(log, cfg, db)
-		return router.InitOrderRouter()
+		return router.InitRouter()
 	})
 }

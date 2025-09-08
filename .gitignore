@@ -5,3 +5,4 @@ go-gin-gorm-starter
 logs/
 /dist/
 /config/config.toml
+/docker-compose.yml

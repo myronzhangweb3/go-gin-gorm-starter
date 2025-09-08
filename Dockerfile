@@ -1,4 +1,4 @@
-FROM golang:alpine AS builder
+FROM golang:1.24-alpine AS builder
 
 WORKDIR /app
 
@@ -7,14 +7,15 @@ RUN go mod download
 
 COPY . .
 
-RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o go-app .
+ENV CGO_ENABLED=0 GOOS=linux GOARCH=amd64
 
-FROM alpine:latest
+RUN --mount=type=cache,target=/root/.cache/go-build \
+    go build -o /out/api-server cmd/main.go
 
-WORKDIR /root/
+FROM alpine:3.18 AS runner
 
-COPY --from=builder /app/go-app .
+WORKDIR /app
+
+COPY --from=builder /out/* ./
 
 EXPOSE 8000
-
-CMD ["./go-app"]

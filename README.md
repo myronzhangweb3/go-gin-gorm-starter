@@ -32,11 +32,16 @@ To get started with this template, follow these simple steps:
    go mod tidy
    ```
 
-4. Copy the `.env.example` file to `.env` and update the variables to match your local setup for MySQL or PostgreSQL.
+4. Copy the `config/config.toml.example` file to `config/config.toml` and update the variables to match your local setup for MySQL or PostgreSQL.
 
 5. Run the application:
    ```bash
-   go run main.go
+   go run cmd/main.go
+   ```
+
+   ```bash
+   docker build --no-cache -t api-server .
+   docker-compose up -d
    ```
 
 ## Documentation
