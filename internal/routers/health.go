@@ -2,7 +2,7 @@ package routers
 
 import (
 	"github.com/gin-gonic/gin"
-	"go-gin-gorm-starter/utils/gin2"
+	"go-gin-gorm-starter/pkg/gin2"
 )
 
 func (r *Router) InitHealthRouter(router *gin.RouterGroup) {

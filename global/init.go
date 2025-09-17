@@ -1,8 +1,8 @@
 package global
 
 import (
-	"go-gin-gorm-starter/utils/dbutil"
-	"go-gin-gorm-starter/utils/logging"
+	"go-gin-gorm-starter/pkg/dbutil"
+	"go-gin-gorm-starter/pkg/logging"
 )
 
 func init() {

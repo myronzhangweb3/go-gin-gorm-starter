@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"go-gin-gorm-starter/config"
 	"go-gin-gorm-starter/internal/middleware"
-	"go-gin-gorm-starter/utils/gin2"
+	"go-gin-gorm-starter/pkg/gin2"
 	"time"
 
 	"go.uber.org/zap"
