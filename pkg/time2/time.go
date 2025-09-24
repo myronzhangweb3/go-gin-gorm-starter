@@ -1,9 +1,10 @@
 package time2
 
 import (
-	log "github.com/cihub/seelog"
 	"runtime"
 	"time"
+
+	log "github.com/cihub/seelog"
 )
 
 // TimeConsume ...

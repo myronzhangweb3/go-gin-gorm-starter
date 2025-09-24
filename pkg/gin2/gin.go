@@ -1,28 +1,39 @@
 package gin2
 
 import (
-	log "github.com/cihub/seelog"
+	"fmt"
+
 	"github.com/gin-gonic/gin"
-	"net/http"
+	"go.uber.org/zap"
 )
 
-var (
-	HttpResponse = Response()
-)
+type Response struct {
+	Code int         `json:"code"`
+	Msg  string      `json:"msg,omitempty"`
+	Data interface{} `json:"data,omitempty"`
+}
 
-func Response() func(ctx *gin.Context, result interface{}, err error) {
-	return func(ctx *gin.Context, result interface{}, err error) {
-		code := http.StatusOK
-		message := "success"
-		if err != nil {
-			code = http.StatusInternalServerError
-			message = err.Error()
-			log.Errorf("Request error. URL: %s, Details: %s", ctx.Request.URL, err.Error())
+func HttpResponse(log *zap.Logger, ctx *gin.Context, result interface{}, err error) {
+	bizResponse := &Response{}
+	httpCode := 200
+	bodyCode := 0
+	message := ""
+	if err != nil {
+		var err2 *Error
+		if e, ok := err.(*Error); ok {
+			err2 = e
+		} else {
+			err2 = CommonError
 		}
-		ctx.JSON(code, gin.H{
-			"code":    code,
-			"result":  result,
-			"message": message,
-		})
+		httpCode = err2.StatusCode
+		bodyCode = err2.Code
+		message = err2.Msg
+		log.Error(fmt.Sprintf("request error. URL: %s, Details: %s", ctx.Request.URL, err.Error()))
+
+		bizResponse.Msg = message
+		bizResponse.Code = bodyCode
+	} else {
+		bizResponse.Data = result
 	}
+	ctx.JSON(httpCode, bizResponse)
 }

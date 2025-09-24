@@ -1,8 +1,9 @@
 package routers
 
 import (
-	"github.com/gin-gonic/gin"
 	"go-gin-gorm-starter/internal/controller"
+
+	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
 )
 

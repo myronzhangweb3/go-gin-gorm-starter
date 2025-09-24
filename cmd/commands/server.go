@@ -1,8 +1,9 @@
 package commands
 
 import (
-	"github.com/urfave/cli/v2"
 	"go-gin-gorm-starter/cmd/run"
+
+	"github.com/urfave/cli/v2"
 )
 
 var RunCommand = &cli.Command{

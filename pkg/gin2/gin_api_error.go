@@ -5,7 +5,9 @@ import (
 )
 
 var (
-	ServerError = NewError(http.StatusInternalServerError, 500, "System exception, please try again later!")
+	commonMsg = "The system is busy, please try again later!"
+
+	CommonError = newError(10000, commonMsg)
 )
 
 // Error Structure for error handling
@@ -19,13 +21,9 @@ func (e *Error) Error() string {
 	return e.Msg
 }
 
-func OtherError(message string) *Error {
-	return NewError(http.StatusInternalServerError, 500, message)
-}
-
-func NewError(statusCode, Code int, msg string) *Error {
+func newError(Code int, msg string) *Error {
 	return &Error{
-		StatusCode: statusCode,
+		StatusCode: http.StatusOK,
 		Code:       Code,
 		Msg:        msg,
 	}

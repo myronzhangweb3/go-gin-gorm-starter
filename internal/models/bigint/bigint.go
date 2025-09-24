@@ -17,7 +17,7 @@ func New(x *big.Int) *Int {
 
 func NewArray(ints []*big.Int) []*Int {
 	result := make([]*Int, len(ints))
-	for i, _ := range ints {
+	for i := range ints {
 		result[i] = New(ints[i])
 	}
 	return result
@@ -99,7 +99,7 @@ func (b *Int) Scan(value interface{}) error {
 		return nil
 	}
 
-	return fmt.Errorf("Error converting type %T into Int", value)
+	return fmt.Errorf("error converting type %T into Int", value)
 }
 
 func (b *Int) toBigInt() *big.Int {

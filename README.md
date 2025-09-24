@@ -54,6 +54,18 @@ Contributions are what make the open-source community such an amazing place to l
 
 Don't forget to give the project a star! Thanks again!
 
+## Go Code Check
+
+```bash
+golangci-lint run --config .golangci.yml
+```
+
+goimports:
+
+```bash
+goimports -w .
+```
+
 ## License
 
 Distributed under the MIT License. See [LICENSE](./LICENSE) for more information.

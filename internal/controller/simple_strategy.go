@@ -1,15 +1,16 @@
 package controller
 
 import (
-	"github.com/gin-gonic/gin"
 	"go-gin-gorm-starter/internal/models"
 	"go-gin-gorm-starter/internal/service"
 	"go-gin-gorm-starter/pkg/gin2"
 	"go-gin-gorm-starter/pkg/time2"
-	"go.uber.org/zap"
-	"gorm.io/gorm"
 	"strconv"
 	"time"
+
+	"github.com/gin-gonic/gin"
+	"go.uber.org/zap"
+	"gorm.io/gorm"
 )
 
 type SimpleStrategyController struct {
@@ -33,11 +34,11 @@ func (s *SimpleStrategyController) GetSimpleStrategy(ctx *gin.Context) {
 		Name: address,
 	})
 	if err != nil {
-		gin2.HttpResponse(ctx, "", err)
+		gin2.HttpResponse(s.log, ctx, "", err)
 		return
 	}
 
-	gin2.HttpResponse(ctx, data, err)
+	gin2.HttpResponse(s.log, ctx, data, err)
 }
 
 func (s *SimpleStrategyController) SaveSimpleStrategy(ctx *gin.Context) {
@@ -45,15 +46,18 @@ func (s *SimpleStrategyController) SaveSimpleStrategy(ctx *gin.Context) {
 		reqUser models.SimpleStrategy
 	)
 
-	ctx.Bind(&reqUser)
-
-	err := s.strategyService.SaveSimpleStrategy(&reqUser)
-	if err != nil {
-		gin2.HttpResponse(ctx, "", err)
+	if err := ctx.ShouldBindJSON(&reqUser); err != nil {
+		gin2.HttpResponse(s.log, ctx, nil, gin2.CommonError)
 		return
 	}
 
-	gin2.HttpResponse(ctx, err == nil, err)
+	err := s.strategyService.SaveSimpleStrategy(&reqUser)
+	if err != nil {
+		gin2.HttpResponse(s.log, ctx, "", err)
+		return
+	}
+
+	gin2.HttpResponse(s.log, ctx, err == nil, err)
 }
 
 func (s *SimpleStrategyController) DeleteSimpleStrategy(ctx *gin.Context) {
@@ -64,7 +68,7 @@ func (s *SimpleStrategyController) DeleteSimpleStrategy(ctx *gin.Context) {
 	idStr := ctx.Param("id")
 	id, err := strconv.Atoi(idStr)
 	if err != nil {
-		gin2.HttpResponse(ctx, "", err)
+		gin2.HttpResponse(s.log, ctx, "", err)
 		return
 	}
 
@@ -72,9 +76,9 @@ func (s *SimpleStrategyController) DeleteSimpleStrategy(ctx *gin.Context) {
 
 	err = s.strategyService.DeleteSimpleStrategy(&params)
 	if err != nil {
-		gin2.HttpResponse(ctx, "", err)
+		gin2.HttpResponse(s.log, ctx, "", err)
 		return
 	}
 
-	gin2.HttpResponse(ctx, err == nil, err)
+	gin2.HttpResponse(s.log, ctx, err == nil, err)
 }

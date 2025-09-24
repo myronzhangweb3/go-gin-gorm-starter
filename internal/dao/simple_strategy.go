@@ -2,6 +2,7 @@ package dao
 
 import (
 	"go-gin-gorm-starter/internal/models"
+
 	"gorm.io/gorm"
 )
 

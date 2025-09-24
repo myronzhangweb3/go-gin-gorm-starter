@@ -1,10 +1,11 @@
 package run
 
 import (
-	"github.com/gin-gonic/gin"
-	"github.com/urfave/cli/v2"
 	"go-gin-gorm-starter/config"
 	"go-gin-gorm-starter/internal/routers"
+
+	"github.com/gin-gonic/gin"
+	"github.com/urfave/cli/v2"
 	"go.uber.org/zap"
 	"gorm.io/gorm"
 )
